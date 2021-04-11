@@ -2,6 +2,6 @@
 namespace tcp2serial {
 class send_api {
     public:
-        virtual std::string send()=0;
+        virtual void send(std::string)=0;
 };
 }

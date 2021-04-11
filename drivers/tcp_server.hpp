@@ -14,6 +14,8 @@ class tcp_server : public receive_api {
         char _buffer[256];
         struct sockaddr_in _serv_addr, _cli_addr;
     public:
+        tcp_server() = default;
+        ~tcp_server();
         std::string receive() override;
         void init(int port) throw() ;
 };
