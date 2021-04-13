@@ -31,8 +31,7 @@ int main(int argc, char* argv[]) {
             cfg.crlf = std::string(optarg);
             break;
         default: /* '?' */
-            fprintf(stderr, "ERROR!\nCall tcp2serial with -h option to see the help\n",
-                    argv[0]);
+            std::cerr << "ERROR!\nCall tcp2serial with -h option to see the help\n";
             exit(EXIT_FAILURE);
         }
     }
