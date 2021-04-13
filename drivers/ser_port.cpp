@@ -15,11 +15,26 @@ tcp2serial::ser_port::~ser_port() {
     close(_serial_port);
 }
 
-void tcp2serial::ser_port::send(std::string msg) {
-    write(_serial_port, msg.c_str(), msg.size());
+void tcp2serial::ser_port::append_to_send_stream(std::string bytes_to_send) {
+    std::unique_lock<std::mutex> lock(_mx);
+    _bytes_to_send += bytes_to_send;
+    _smp.notify();
 }
 
-void tcp2serial::ser_port::init(const std::string& port_name, const std::string& baud_rate) throw() {
+void tcp2serial::ser_port::serial_port_worker() {
+    do {
+        std::string bytes2send;
+        _smp.wait();
+        {
+            std::unique_lock<std::mutex> lock(_mx);
+            bytes2send = std::move(_bytes_to_send);
+        }
+        write(_serial_port, bytes2send.c_str(), bytes2send.size());
+    }
+    while(true);
+}
+
+void tcp2serial::ser_port::init(const std::string& port_name, const std::string& baud_rate) {
     _baud_rates.init();
     _serial_port = open(port_name.c_str(), O_RDWR);
     struct termios tty;

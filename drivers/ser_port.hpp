@@ -1,9 +1,15 @@
+#ifndef SER_PORT_HPP
+#define SER_PORT_HPP
+
 #include <termios.h>
 #include <unordered_map>
+#include <mutex>
 
-#include "../interfaces/send_api.hpp"
+#include "../apis/send.hpp"
+#include "../utils/semaphore.hpp"
+
 namespace tcp2serial {
-class ser_port : public send_api {
+class ser_port : public send {
         class baud_rate_table {
                 std::unordered_map<std::string,speed_t> _table;
             public:
@@ -35,10 +41,18 @@ class ser_port : public send_api {
         };
         baud_rate_table _baud_rates;
         int _serial_port;
+        //---------------------------
+        std::string _bytes_to_send;
+        tcp2serial::semaphore _smp;
+        std::mutex _mx;
+
     public:
         ser_port() = default;
         ~ser_port();
-        void send(std::string msg) override;
-        void init(const std::string& port_name, const std::string& baud_rate) throw() ;
+        void append_to_send_stream(std::string bytes_to_send) override;
+        void serial_port_worker();
+        void init(const std::string& port_name, const std::string& baud_rate);
 };
 }
+
+#endif
