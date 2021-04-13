@@ -50,7 +50,7 @@ class ser_port : public send {
         ser_port() = default;
         ~ser_port();
         void append_to_send_stream(std::string bytes_to_send) override;
-        void serial_port_worker();
+        void send_worker() override;
         void init(const std::string& port_name, const std::string& baud_rate);
 };
 }

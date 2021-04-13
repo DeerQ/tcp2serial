@@ -22,11 +22,6 @@ std::string tcp2serial::tcp_server::receive_data() {
         if (n < 0) {
             throw std::runtime_error("ERROR while reading from socket");
         }
-        //        std::string response = "I got your message";
-        //        n = write(_new_socket_fd,response.data(),response.size());
-        //        if (n < 0) {
-        //            throw std::runtime_error("ERROR writing to socket");
-        //        }
     }
     catch(...) {
         eptr = std::current_exception();
@@ -40,7 +35,7 @@ std::string tcp2serial::tcp_server::receive_data() {
 void tcp2serial::tcp_server::init(int port) {
     _sock_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sock_fd < 0) {
-        throw std::runtime_error("ERROR opening socket");
+        throw std::runtime_error("ERROR while opening socket");
     }
     bzero((char*) &_serv_addr, sizeof(_serv_addr));
     _serv_addr.sin_family = AF_INET;
@@ -48,7 +43,7 @@ void tcp2serial::tcp_server::init(int port) {
     _serv_addr.sin_port = htons(port);
     if (bind(_sock_fd, (struct sockaddr*) &_serv_addr,
              sizeof(_serv_addr)) < 0) {
-        throw std::runtime_error("ERROR binding socket");
+        throw std::runtime_error("ERROR while binding socket");
     }
     listen(_sock_fd,5);
     //------------------------------------------------------

@@ -2,14 +2,17 @@ CFLAGS=-pthread
 LDFLAGS=-lpthread
 all: tcp2serial 
 
-tcp2serial: main.o semaphore.o ser_port.o tcp_server.o driver_manager.o
-	g++ --std=c++11 main.o semaphore.o ser_port.o tcp_server.o driver_manager.o -o tcp2serial  $(LDFLAGS) 
+tcp2serial: main.o configs.o semaphore.o ser_port.o tcp_server.o driver_manager.o
+	g++ --std=c++11 main.o configs.o semaphore.o ser_port.o tcp_server.o driver_manager.o -o tcp2serial  $(LDFLAGS) 
 
 main.o: main.cpp
 	g++ -c --std=c++11 $(CFLAGS) main.cpp -o main.o 
 
 semaphore.o: utils/semaphore.cpp 
 	g++ -c --std=c++11 $(CFLAGS) utils/semaphore.cpp -o semaphore.o
+
+configs.o: utils/configs.cpp 
+	g++ -c --std=c++11 $(CFLAGS) utils/configs.cpp -o configs.o
 
 ser_port.o: drivers/ser_port.cpp 
 	g++ -c --std=c++11 $(CFLAGS) drivers/ser_port.cpp -o ser_port.o

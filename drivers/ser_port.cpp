@@ -21,7 +21,7 @@ void tcp2serial::ser_port::append_to_send_stream(std::string bytes_to_send) {
     _smp.notify();
 }
 
-void tcp2serial::ser_port::serial_port_worker() {
+void tcp2serial::ser_port::send_worker() {
     do {
         std::string bytes2send;
         _smp.wait();

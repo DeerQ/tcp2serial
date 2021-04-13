@@ -5,6 +5,7 @@
 namespace tcp2serial {
 class receive {
     public:
+        virtual ~receive() {}
         virtual std::string receive_data()=0;
 };
 }
