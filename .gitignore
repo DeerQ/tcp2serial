@@ -1,4 +1,5 @@
 *.rbc
 *.fyc
 tcp2serial.pro*
-
+*.o
+tcp2serial
