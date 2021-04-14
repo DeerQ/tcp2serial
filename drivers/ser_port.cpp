@@ -30,6 +30,7 @@ void tcp2serial::ser_port::send_worker() {
             bytes2send = std::move(_bytes_to_send);
         }
         write(_serial_port, bytes2send.c_str(), bytes2send.size());
+	std::cerr << bytes2send << '\n';
     }
     while(true);
 }
