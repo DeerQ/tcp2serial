@@ -12,7 +12,7 @@ std::string tcp2serial::tcp_server::receive_data() {
     _new_socket_fd= accept(_sock_fd,
                            (struct sockaddr*) &_cli_addr,
                            &_clilen);
-    std::exception_ptr eptr;
+//    std::exception_ptr eptr;
     try {
         if ( _new_socket_fd < 0) {
             throw std::runtime_error("ERROR on accept");
@@ -23,13 +23,16 @@ std::string tcp2serial::tcp_server::receive_data() {
             throw std::runtime_error("ERROR while reading from socket");
         }
     }
-    catch(...) {
-        eptr = std::current_exception();
+    catch( const std::exception & se ){
+	    close(_new_socket_fd);
+	    throw std::runtime_error(se.what());
     }
+  //      eptr = std::current_exception();
+    //}
     close(_new_socket_fd);
-    if (eptr) {
-        std::rethrow_exception(eptr);
-    }
+    //if (eptr) {
+    //    std::rethrow_exception(eptr);
+    //}
     return std::string(_buffer);
 }
 void tcp2serial::tcp_server::init(int port) {
