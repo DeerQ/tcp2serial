@@ -25,7 +25,10 @@ class tcp_server : public receive {
         tcp_server() = default;
         ~tcp_server();
         std::string receive_data() override;
+        virtual void send_data(std::string msg ) override;
         void init(int port) ;
+        void accept_new_connection() override;
+
 };
 }
 

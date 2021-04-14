@@ -2,16 +2,21 @@
 #include "drivers/ser_port.hpp"
 #include "drivers/tcp_server.hpp"
 #include <iostream>
+#include <algorithm>
 
 tcp2serial::driver_manager::~driver_manager() {
     delete _send_api;
     delete _receive_api;
 }
 
-void tcp2serial::driver_manager::receive_to_send_worker(send* send_api,
+void tcp2serial::driver_manager::send_to_receive_worker(send* send_api,
         receive* receive_api) {
-    while(true) {
-        send_api->append_to_send_stream(receive_api->receive_data());
+    while(_send_to_receive_thread) {
+        auto msg = send_api->receive_data();
+        if(msg.empty()) {
+            continue;
+        }
+        receive_api->send_data(msg);
     }
 }
 
@@ -20,6 +25,7 @@ tcp2serial::driver_manager::driver_manager(tcp2serial::configs cfg)
 }
 
 void tcp2serial::driver_manager::init() {
+    _send_to_receive_thread = false;
     if ( nullptr != _send_api ) {
         throw std::runtime_error("ERROR, send api pointer is not empty");
     }
@@ -39,12 +45,33 @@ void tcp2serial::driver_manager::init() {
 }
 
 void tcp2serial::driver_manager::run() {
-    _worker_threads.emplace_back(&send::send_worker,_send_api);
-    for ( int i=0 ; i<2; i++) {
-        _worker_threads.emplace_back(&driver_manager::receive_to_send_worker,this,_send_api,_receive_api);
+    std::string input;
+    _send_api_send_worker_thread = std::thread(&send::send_worker,_send_api);
+    while (true) {
+        _receive_api->accept_new_connection();
+        _send_to_receive_thread=true;
+        _send_api_receive_worker_thread = std::thread(&driver_manager::send_to_receive_worker,this,_send_api,_receive_api);
+        while(true) {
+            try {
+                input = _receive_api->receive_data();
+            }
+            catch(...) {
+                break;
+            }
+            if(input.empty()) {
+                continue;
+            }
+            if( true == _cfg.crlf()) {
+                input += "\r\n";
+            }
+            else {
+                input.erase(std::remove(input.begin(), input.end(), '\n'), input.end());
+                input.erase(std::remove(input.begin(), input.end(), '\r'), input.end());
+            }
+            _send_api->append_to_send_stream(input);
+        }
+        _send_to_receive_thread = false;
+        _send_api_receive_worker_thread.join();
     }
-    //--------------
-    for ( auto& th: _worker_threads) {
-        th.join();
-    }
+    _send_api_send_worker_thread.join();
 }

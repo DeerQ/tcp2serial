@@ -52,6 +52,7 @@ class ser_port : public send {
         void append_to_send_stream(std::string bytes_to_send) override;
         void send_worker() override;
         void init(const std::string& port_name, const std::string& baud_rate);
+        virtual std::string receive_data() override;
 };
 }
 

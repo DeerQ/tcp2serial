@@ -19,7 +19,7 @@ std::string tcp2serial::configs::ser_port_baud_rate() {
 std::string tcp2serial::configs::incoming_req_type() {
     return _incoming_req_type;
 }
-std::string tcp2serial::configs::crlf() {
+bool tcp2serial::configs::crlf() {
     return _crlf;
 }
 void tcp2serial::configs::tcp_port(int f) {
@@ -34,7 +34,7 @@ void tcp2serial::configs::ser_port_baud_rate(std::string f) {
 void tcp2serial::configs::incoming_req_type(std::string f) {
     _incoming_req_type = f;
 }
-void tcp2serial::configs::crlf(std::string f) {
+void tcp2serial::configs::crlf(bool f) {
     _crlf = f;
 }
 

@@ -10,19 +10,19 @@ class configs {
         std::string _ser_port_name;
         std::string _ser_port_baud_rate;
         std::string _incoming_req_type;
-        std::string _crlf;
+        bool _crlf;
     public:
         configs();
         int tcp_port();
         std::string ser_port_name();
         std::string ser_port_baud_rate();
         std::string incoming_req_type();
-        std::string crlf();
+        bool crlf();
         void tcp_port(int f);
         void ser_port_name(std::string f);
         void ser_port_baud_rate(std::string f);
         void incoming_req_type(std::string f);
-        void crlf(std::string f);
+        void crlf(bool f);
 };
 std::ostream& operator<<(std::ostream& os, const tcp2serial::configs& cfg);
 }

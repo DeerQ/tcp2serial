@@ -18,11 +18,13 @@ namespace tcp2serial {
 class driver_manager {
         configs _cfg;
         // Pool of threads used for receiving data from the data source and sending to the predefined destination
-        std::vector<std::thread> _worker_threads;
+        std::thread _send_api_send_worker_thread;
+        std::thread _send_api_receive_worker_thread;
+        bool _send_to_receive_thread;
 
         send* _send_api;
         receive* _receive_api;
-        void receive_to_send_worker(send* send_api, receive* receive_api);
+        void send_to_receive_worker(send* send_api, receive* receive_api);
     public:
         ~driver_manager();
         driver_manager(const driver_manager& dm)=delete;
@@ -30,6 +32,7 @@ class driver_manager {
         driver_manager(configs cfg);
         void init();
         void run();
+
 };
 }
 #endif // DRIVER_MANAGER_HPP

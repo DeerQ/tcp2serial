@@ -30,7 +30,7 @@ void tcp2serial::ser_port::send_worker() {
             bytes2send = std::move(_bytes_to_send);
         }
         write(_serial_port, bytes2send.c_str(), bytes2send.size());
-	std::cerr << bytes2send << '\n';
+        //  std::cerr << bytes2send << '\n';
     }
     while(true);
 }
@@ -65,4 +65,11 @@ void tcp2serial::ser_port::init(const std::string& port_name, const std::string&
     if (tcsetattr(_serial_port, TCSANOW, &tty) != 0) {
         throw std::runtime_error("ERROR "+std::to_string(errno)+" from tcsetattr: " +strerror(errno));
     }
+}
+
+std::string tcp2serial::ser_port::receive_data() {
+    char read_buf [256];
+    memset(&read_buf, '\0', sizeof(read_buf));
+    read(_serial_port, &read_buf, sizeof(read_buf));
+    return std::string {read_buf};
 }

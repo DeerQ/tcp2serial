@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
             cfg.incoming_req_type(std::string(optarg));
             break;
         case 'o':
-            cfg.crlf(std::string(optarg));
+            cfg.crlf(std::string(optarg)=="add");
             break;
         default: /* '?' */
             std::cerr << "ERROR!\nCall tcp2serial with -h option to see the help\n";
