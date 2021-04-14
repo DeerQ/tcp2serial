@@ -3,7 +3,7 @@ LDFLAGS=-lpthread
 all: tcp2serial 
 
 tcp2serial: main.o configs.o semaphore.o ser_port.o tcp_server.o driver_manager.o
-	arm-linux-gnueabi-g++ --std=c++11 main.o configs.o semaphore.o ser_port.o tcp_server.o driver_manager.o -o tcp2serial  $(LDFLAGS) 
+	arm-linux-gnueabi-g++ --std=c++11 -static-libstdc++ main.o configs.o semaphore.o ser_port.o tcp_server.o driver_manager.o -o tcp2serial  $(LDFLAGS) 
 
 main.o: main.cpp
 	arm-linux-gnueabi-g++ -c --std=c++11 $(CFLAGS) main.cpp -o main.o 
