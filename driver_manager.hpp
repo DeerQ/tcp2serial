@@ -20,11 +20,11 @@ class driver_manager {
         // Pool of threads used for receiving data from the data source and sending to the predefined destination
         std::vector<std::thread> _worker_threads;
 
-        send* _send_api;
-        receive* _receive_api;
-        void receive_to_send_worker(send* send_api, receive* receive_api);
+        std::shared_ptr<send> _send_api;
+        std::shared_ptr<receive> _receive_api;
+        void receive_to_send_worker(std::shared_ptr<send> send_api, std::shared_ptr<receive> receive_api);
     public:
-        ~driver_manager();
+        ~driver_manager() = default;
         driver_manager(const driver_manager& dm)=delete;
         driver_manager& operator=(const driver_manager& dm)=delete;
         driver_manager(configs cfg);
